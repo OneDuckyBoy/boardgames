@@ -14,9 +14,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - name: checkout
       uses: actions/checkout@v3
@@ -41,3 +38,21 @@ jobs:
           service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
           api-key: ${{ secrets.MY_RENDER_API_KEY }}
           # wait-for-success: true
+  run-ui-tests:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+    - name: install project dependencies
+      run: npm install
+    - name: install Playwright
+      run: npx playwright install
+    - name: run ui tests for the application
+      run: npm run test:ui
